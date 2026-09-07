@@ -6,7 +6,7 @@
 
 | 步骤 | 名称 | 预算 | AI | 状态 | commit | 完成日 | 判据（原样抄自顺序单/手册） |
 |---|---|---|---|---|---|---|---|
-| S05 | 建仓 + 骨架 + 冒烟 | 0.5h | 🤖 | 🔶 骨架已就位（本 commit），待你 review | 本分支 | 09-07 | `pytest` 跑通；src 相关红=进度条（正常） |
+| S05 | 建仓 + 骨架 + 冒烟 | 0.5h | 🤖 | ✅ 判据达成：骨架已交付并 review 通过（合入 main 走 PR #1 快进，合入即闭环） | e01b1f6 | 09-07 | `pytest` 跑通；src 相关红=进度条（正常） |
 | S07 | T1 证据源锁定 | 0.5h | 🤖 | ☐ | | | `docs/SOURCES.md` 每行可回溯页码才打 ✅ |
 | S08 | 本地装 SU2 + 冒烟 | 1h | — | ☐ | | | `SU2_CFD --version` 打出 v8.5.0 横幅 |
 | S10′ | 一个脚本出三档网格 🔒 | 1.5h | 部分 | ☐ | | | 三档生成成功 + `tools/check_mesh.py` 全 OK + SU2 各跑 100 步 |
@@ -24,6 +24,20 @@
 
 ## 🏁 里程碑
 - ☐ **第一个个人 E4**（S16′ 达成日 = ______）。在此之前本仓不发布任何数值结论。
+
+## S05 收尾实测记录（2026-09-07，沙箱内可验证的部分；口径全部可复现）
+```
+$ python -m pytest                     → 27 failed, 12 passed, 1 skipped
+  · 12 passed  = 网格生成/拓扑体检/工具类（tools + tests/test_mesh_tools.py + test_smoke 的非手写区条目）
+  · 27 failed  = src/ 三个手写模块的验收测试（模块不存在 → 有意红，进度条）
+  · 1 skipped  = test_real_log_shape，等 S12′ 真日志（不许用假日志冒充实测）
+$ python tools/make_grids_numpy.py     → L1/L2/L3 = 2304/9216/36864 单元，h_eq 精确减半，首层比 0.469/0.484
+$ python tools/check_mesh.py           → 三份 .su2 全 OK（翻转/非流形/孤儿点 = 0，markers=[Airfoil,Farfield]）
+$ python tools/run_levels.py --dry-run L1 L2 L3 → 装配 + cfg↔mesh marker 交叉校验通过
+（以上仅证明"脚手架可用 + 判据自洽"，不构成任何 CFD 结论；判据可达性另用仓外参考实现验证为 40 passed 后删除）
+```
+未打勾项（沙箱物理限制，见 BLOCKERS #2）：`SU2_CFD` 冒烟、三档各 100 步、任何收敛数值 —— 全归你本机。
+
 
 ## 手写证据链自查（S26 要对这三行负责）
 ```bash
