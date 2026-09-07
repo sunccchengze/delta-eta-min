@@ -1,0 +1,21 @@
+# 生成物 / 缓存
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv*/
+*.egg-info/
+
+# 第三方求解器产物（体量大、可重跑）——参照 S02 的"公开仓减重"教训，一开始就别让垃圾进树
+runs/*/
+!runs/README.md
+!runs/RUNS.md
+mesh/*.su2
+mesh/_*.geo
+mesh/mesh_manifest.json
+
+# 白板录像与照片只留本地（体量大 + 私人；提交 = 把练习过程公开成素材库，没必要）
+drills/*
+!drills/README.md
+
+# 图与 JSON 结论要提交（它们是交付物）
+!docs/*.png

@@ -1,0 +1,6 @@
+# 与手册第 0 节一致；永远用 python -m pip（裸 pip 启动器会因解释器变动报 Fatal error in launcher）
+numpy>=1.24
+pandas>=2.0
+matplotlib>=3.7
+pytest>=7.4
+# gmsh>=4.11        # 仅 S10′ 路径 A 需要；装不上就用 tools/make_grids_numpy.py
