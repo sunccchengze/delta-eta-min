@@ -39,7 +39,19 @@
 - 你要做的：把这个结论**回写上游**（手册或白皮书对应页），并在 S26 对表时算一条打脸链路：
   预测"文档可用" → 实验"自检用例不自洽" → 结论"引用数字前自己复现（铁律④）不是口号"。
 
-## #5 matplotlib 默认字体无 CJK（本仓 QA 实测）
+## #5 push 被拒 ≠ 通道已关：先读错误类型（2026-09-07 实测，PR #1 合并之后）
+- 症状：合并 PR #1 后执行 `git push --force-with-lease origin <会话分支>` →
+  `! [rejected] ... (stale info)`。**这不是**《BRANCH-SAFETY.md》铁律 2 说的"通道已关"。
+- 真因：Arena 沙箱的 clone 是**单分支** refspec（`+refs/heads/main:refs/remotes/origin/main`），
+  本地根本没有会话分支的 remote-tracking 引用 → `--force-with-lease` 拿不到期望值，只能报 stale info。
+- 解药（已验证有效）：显式给 lease 期望值 ——
+  `git push --force-with-lease=refs/heads/<分支>:<远端sha> origin HEAD:refs/heads/<分支>`。
+- 本次实测副产品：**REST 合并（merge_method=rebase）之后 push 仍可用**，
+  即"合并 PR 立刻关闭本会话远程通道"在这一次没有复现。
+  ⚠️ 但**不要把这条当免死金牌**：铁律 1（每步 commit+push）保护的是"未推送的提交永久丢失"，
+  那是不可逆损失；通道是否关闭只是可用性问题。一条样本也不足以推翻旧教训，照旧先推再做。
+
+## #6 matplotlib 默认字体无 CJK（本仓 QA 实测）
 - 症状：`UserWarning: Glyph 65289 (FULLWIDTH RIGHT PARENTHESIS) missing from font(s) DejaVu Sans`
   → 图里的中文/全角符号渲成方块。
 - 已处理：`tools/plot_results.py` 图内文字改全 ASCII（论文图本来也该如此）。
