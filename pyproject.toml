@@ -1,0 +1,21 @@
+[project]
+name = "delta-eta-min"
+version = "0.0.1"
+description = "T1 · 收益显著性检验框架（Δη_min）：网格不确定度 + 迭代噪声 → 可分辨下限"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "pandas>=2.0", "matplotlib>=3.7"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4"]
+gmsh = ["gmsh>=4.11"]          # S10′ 路径 A；缺 libGLU 的机器用路径 B（见 BLOCKERS.md #1）
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q --no-header"
+# 故意让 S13′/S14′/S15′ 的红测试可见：它们是进度条，不是待修的 bug
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
